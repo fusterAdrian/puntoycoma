@@ -11,6 +11,7 @@ export interface Episode {
   date: string;
   duration: string;
   description: string;
+  thumbnail?: string;
   topics: Topic[];
 }
 

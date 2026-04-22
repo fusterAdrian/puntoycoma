@@ -1,16 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import Footer from '../../components/Footer.astro';
-import { EPISODES, SOCIALS } from '../../data/content';
+import { SOCIALS } from '../../data/content';
+import { fetchYouTubeEpisodes } from '../../lib/youtube';
 
-export function getStaticPaths() {
-  return EPISODES.map((ep) => ({
+export async function getStaticPaths() {
+  const episodes = await fetchYouTubeEpisodes();
+  return episodes.map((ep) => ({
     params: { id: String(ep.id) },
     props: { episode: ep },
   }));
 }
 
 const { episode } = Astro.props;
+const hasTopics = episode.topics.length > 0;
 
 const iconPaths: Record<string, string> = {
   YouTube: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.5 6.2s-.3-1.9-1.1-2.7c-1-1.1-2.2-1.1-2.7-1.2C16.8 2 12 2 12 2s-4.8 0-7.7.3c-.5.1-1.7.1-2.7 1.2-.8.8-1.1 2.7-1.1 2.7S.2 8.4.2 10.6v2.1c0 2.2.3 4.4.3 4.4s.3 1.9 1.1 2.7c1 1.1 2.4 1 3 1.1C6.8 21 12 21 12 21s4.8 0 7.7-.3c.5-.1 1.7-.1 2.7-1.2.8-.8 1.1-2.7 1.1-2.7s.3-2.2.3-4.4v-2.1c0-2.2-.3-4.4-.3-4.4zM9.7 15.5V8.4l7.3 3.6-7.3 3.5z"/></svg>`,
@@ -23,7 +26,7 @@ const iconPaths: Record<string, string> = {
   title={`EP. ${String(episode.id).padStart(2,'0')} — ${episode.title} | Punto y Coma`}
   description={episode.description}
 >
-  <!-- Sticky nav for detail page -->
+  <!-- Sticky nav -->
   <nav class="sticky top-0 z-50 bg-offwhite border-b-2 border-dark px-4 md:px-8">
     <div class="max-w-6xl mx-auto flex items-center gap-4 h-16">
       <a href="/" class="btn btn-sky text-sm px-4 py-2 flex-shrink-0">← Volver</a>
@@ -40,9 +43,7 @@ const iconPaths: Record<string, string> = {
       <!-- Header -->
       <div class="mb-12">
         <div class="flex gap-2 items-center flex-wrap mb-3">
-          <div
-            class="badge bg-orange-podcast -rotate-1"
-          >
+          <div class="badge bg-orange-podcast -rotate-1">
             EP. {String(episode.id).padStart(2, '0')}
           </div>
           <span class="font-bold text-sm opacity-45">{episode.date} · {episode.duration}</span>
@@ -58,12 +59,11 @@ const iconPaths: Record<string, string> = {
         </p>
       </div>
 
-      <!-- Two column layout -->
-      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start">
+      <!-- Layout: dos columnas si hay topics, una si no -->
+      <div class={hasTopics ? 'grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start' : 'max-w-3xl'}>
 
-        <!-- Left: Player + platforms -->
+        <!-- Izquierda: Player + plataformas -->
         <div>
-          <!-- Video / placeholder -->
           <div class="border-2 border-dark rounded-2xl overflow-hidden mb-7" style="box-shadow: 6px 6px 0 #1A1A1A;">
             {episode.youtubeId ? (
               <div class="relative" style="padding-bottom: 56.25%;">
@@ -76,7 +76,7 @@ const iconPaths: Record<string, string> = {
               </div>
             ) : (
               <div
-                class="aspect-video flex flex-col items-center justify-center gap-4 relative overflow-hidden border-b-2 border-dark"
+                class="aspect-video flex flex-col items-center justify-center gap-4 relative overflow-hidden"
                 style="background: linear-gradient(135deg, #A8D4E8 0%, #7BB8D4 100%);"
               >
                 <div
@@ -91,9 +91,6 @@ const iconPaths: Record<string, string> = {
                 />
                 <div class="text-center relative z-10">
                   <p class="font-black text-lg mb-1">El vídeo llegará pronto</p>
-                  <p class="font-semibold text-sm opacity-60 mb-4">
-                    Actualiza el youtubeId del episodio para activar el reproductor
-                  </p>
                   <a
                     href="https://www.youtube.com/@PuntoyComa-t2i"
                     target="_blank"
@@ -107,7 +104,7 @@ const iconPaths: Record<string, string> = {
             )}
           </div>
 
-          <!-- Listen on -->
+          <!-- Escúchalo en -->
           <div
             class="bg-sky-podcast border-2 border-dark rounded-2xl px-5 py-5"
             style="box-shadow: 4px 4px 0 #1A1A1A;"
@@ -130,59 +127,61 @@ const iconPaths: Record<string, string> = {
           </div>
         </div>
 
-        <!-- Right: Topics accordion -->
-        <div>
-          <h2 class="font-black text-xl mb-5" style="letter-spacing: -0.5px;">
-            Temas del episodio
-            <span
-              class="inline-block bg-orange-podcast border-2 border-dark rounded-full px-2.5 py-0.5 text-sm ml-2 align-middle"
-              style="box-shadow: 2px 2px 0 #1A1A1A;"
-            >
-              {episode.topics.length}
-            </span>
-          </h2>
-          <div class="flex flex-col gap-3" id="accordion">
-            {episode.topics.map((topic, i) => (
-              <div
-                class="topic-item border-2 border-dark rounded-2xl overflow-hidden transition-all duration-150"
+        <!-- Derecha: Topics (solo si existen) -->
+        {hasTopics && (
+          <div>
+            <h2 class="font-black text-xl mb-5" style="letter-spacing: -0.5px;">
+              Temas del episodio
+              <span
+                class="inline-block bg-orange-podcast border-2 border-dark rounded-full px-2.5 py-0.5 text-sm ml-2 align-middle"
                 style="box-shadow: 2px 2px 0 #1A1A1A;"
-                data-index={i}
-                data-open={i === 0 ? 'true' : 'false'}
               >
-                <button
-                  class="topic-btn w-full bg-transparent border-none cursor-pointer px-4 py-4 flex justify-between items-start gap-3 font-nunito text-left"
-                  type="button"
+                {episode.topics.length}
+              </span>
+            </h2>
+            <div class="flex flex-col gap-3" id="accordion">
+              {episode.topics.map((topic, i) => (
+                <div
+                  class="topic-item border-2 border-dark rounded-2xl overflow-hidden transition-all duration-150"
+                  style="box-shadow: 2px 2px 0 #1A1A1A;"
+                  data-index={i}
+                  data-open={i === 0 ? 'true' : 'false'}
                 >
-                  <div class="flex gap-3 items-start">
-                    <div
-                      class="flex-shrink-0 w-7 h-7 bg-orange-podcast border-2 border-dark rounded-full flex items-center justify-center font-black text-xs mt-0.5"
-                      style="box-shadow: 2px 2px 0 #1A1A1A;"
-                    >
-                      {i + 1}
+                  <button
+                    class="topic-btn w-full bg-transparent border-none cursor-pointer px-4 py-4 flex justify-between items-start gap-3 font-nunito text-left"
+                    type="button"
+                  >
+                    <div class="flex gap-3 items-start">
+                      <div
+                        class="flex-shrink-0 w-7 h-7 bg-orange-podcast border-2 border-dark rounded-full flex items-center justify-center font-black text-xs mt-0.5"
+                        style="box-shadow: 2px 2px 0 #1A1A1A;"
+                      >
+                        {i + 1}
+                      </div>
+                      <span class="font-extrabold text-sm leading-snug">{topic.title}</span>
                     </div>
-                    <span class="font-extrabold text-sm leading-snug">{topic.title}</span>
+                    <span class="topic-arrow font-black text-base flex-shrink-0 mt-0.5 transition-transform duration-200">↓</span>
+                  </button>
+                  <div class="topic-body px-4 pb-5 pl-14 hidden">
+                    <p class="font-semibold text-sm leading-relaxed text-dark/63 mb-3">
+                      {topic.summary}
+                    </p>
+                    {topic.link && topic.link !== '#' && (
+                      <a
+                        href={topic.link}
+                        target="_blank"
+                        rel="noopener"
+                        class="btn btn-dark text-xs px-4 py-2"
+                      >
+                        Ver noticia ↗
+                      </a>
+                    )}
                   </div>
-                  <span class="topic-arrow font-black text-base flex-shrink-0 mt-0.5 transition-transform duration-200">↓</span>
-                </button>
-                <div class="topic-body px-4 pb-5 pl-14 hidden">
-                  <p class="font-semibold text-sm leading-relaxed text-dark/63 mb-3">
-                    {topic.summary}
-                  </p>
-                  {topic.link && topic.link !== '#' && (
-                    <a
-                      href={topic.link}
-                      target="_blank"
-                      rel="noopener"
-                      class="btn btn-dark text-xs px-4 py-2"
-                    >
-                      Ver noticia ↗
-                    </a>
-                  )}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
 
@@ -196,7 +195,6 @@ const iconPaths: Record<string, string> = {
 </Layout>
 
 <script>
-  // Accordion logic
   const items = document.querySelectorAll('.topic-item');
 
   function openItem(item: Element) {
@@ -219,18 +217,13 @@ const iconPaths: Record<string, string> = {
     if (arrow) arrow.style.transform = '';
   }
 
-  // Open first item by default
   if (items.length > 0) openItem(items[0]);
 
   items.forEach(item => {
     const btn = item.querySelector('.topic-btn')!;
     btn.addEventListener('click', () => {
       const isOpen = item.getAttribute('data-open') === 'true';
-      if (isOpen) {
-        closeItem(item);
-      } else {
-        openItem(item);
-      }
+      if (isOpen) { closeItem(item); } else { openItem(item); }
     });
   });
 </script>

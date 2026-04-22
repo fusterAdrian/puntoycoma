@@ -1,5 +1,12 @@
 ---
-import { EPISODES, THUMB_COLORS } from '../data/content';
+import type { Episode } from '../data/content';
+import { THUMB_COLORS } from '../data/content';
+
+interface Props {
+  episodes: Episode[];
+}
+
+const { episodes } = Astro.props;
 ---
 
 <section id="capitulos" class="py-20 md:py-28 px-4 md:px-8 bg-offwhite">
@@ -18,69 +25,85 @@ import { EPISODES, THUMB_COLORS } from '../data/content';
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
-      {EPISODES.map((ep) => {
-        const bg = THUMB_COLORS[(ep.id - 1) % THUMB_COLORS.length];
-        return (
-          <article
-            class="episode-card card-brutal flex flex-col cursor-pointer overflow-hidden"
-            data-episode-id={ep.id}
-          >
-            <!-- Thumbnail -->
-            <div class="relative">
-              <div
-                class="w-full aspect-video flex items-center justify-center relative overflow-hidden border-b-2 border-dark"
-                style={`background: ${bg};`}
-              >
+    {episodes.length === 0 ? (
+      <div class="text-center py-20 opacity-50 font-semibold">
+        No hay episodios disponibles aún.
+      </div>
+    ) : (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
+        {episodes.map((ep) => {
+          const bg = THUMB_COLORS[(ep.id - 1) % THUMB_COLORS.length];
+          return (
+            <article
+              class="episode-card card-brutal flex flex-col cursor-pointer overflow-hidden"
+              data-episode-id={ep.id}
+            >
+              <!-- Thumbnail -->
+              <div class="relative">
                 <div
-                  class="absolute inset-0"
-                  style="background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1.5px, transparent 1.5px); background-size: 18px 18px;"
-                ></div>
-                <img
-                  src="/images/mascota.jpg"
-                  class="w-16 h-16 rounded-full border-2 border-dark object-cover relative z-10"
-                  style="box-shadow: 3px 3px 0 #1A1A1A;"
-                  alt=""
-                />
-                <div class="absolute bottom-2.5 right-2.5 w-9 h-9 bg-dark/85 rounded-full flex items-center justify-center z-10">
-                  <span class="text-white text-xs ml-0.5">▶</span>
-                </div>
-                <div class="absolute bottom-2.5 left-2.5 bg-dark/75 text-white rounded-md px-2 py-0.5 text-xs font-bold z-10">
-                  {ep.duration}
-                </div>
-              </div>
-              <!-- EP badge -->
-              <div
-                class="absolute top-2.5 left-2.5 bg-orange-podcast border-2 border-dark rounded-lg px-2.5 py-0.5 font-black text-xs -rotate-2"
-                style="box-shadow: 2px 2px 0 #1A1A1A;"
-              >
-                EP. {String(ep.id).padStart(2, '0')}
-              </div>
-            </div>
-
-            <!-- Content -->
-            <div class="p-4 md:p-5 flex flex-col flex-1">
-              <p class="font-bold text-xs text-dark/45 mb-1.5">{ep.date}</p>
-              <h3 class="font-black text-base leading-snug mb-2 line-clamp-2">{ep.title}</h3>
-              <p class="font-semibold text-sm text-dark/58 leading-relaxed mb-4 flex-1 line-clamp-3">{ep.description}</p>
-              <div class="flex items-center justify-between mt-auto">
-                <span
-                  class="font-bold text-xs bg-sky-podcast px-2.5 py-1 rounded-full border border-dark/30"
+                  class="w-full aspect-video flex items-center justify-center relative overflow-hidden border-b-2 border-dark"
+                  style={`background: ${bg};`}
                 >
-                  {ep.duration}
-                </span>
-                <span class="font-extrabold text-sm ep-arrow transition-colors duration-150">Ver episodio →</span>
+                  {ep.thumbnail ? (
+                    <img
+                      src={ep.thumbnail}
+                      alt={ep.title}
+                      class="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <>
+                      <div
+                        class="absolute inset-0"
+                        style="background-image: radial-gradient(circle, rgba(0,0,0,0.07) 1.5px, transparent 1.5px); background-size: 18px 18px;"
+                      ></div>
+                      <img
+                        src="/images/mascota.jpg"
+                        class="w-16 h-16 rounded-full border-2 border-dark object-cover relative z-10"
+                        style="box-shadow: 3px 3px 0 #1A1A1A;"
+                        alt=""
+                      />
+                    </>
+                  )}
+                  <div class="absolute bottom-2.5 right-2.5 w-9 h-9 bg-dark/85 rounded-full flex items-center justify-center z-10">
+                    <span class="text-white text-xs ml-0.5">▶</span>
+                  </div>
+                  <div class="absolute bottom-2.5 left-2.5 bg-dark/75 text-white rounded-md px-2 py-0.5 text-xs font-bold z-10">
+                    {ep.duration}
+                  </div>
+                </div>
+                <!-- EP badge -->
+                <div
+                  class="absolute top-2.5 left-2.5 bg-orange-podcast border-2 border-dark rounded-lg px-2.5 py-0.5 font-black text-xs -rotate-2"
+                  style="box-shadow: 2px 2px 0 #1A1A1A;"
+                >
+                  EP. {String(ep.id).padStart(2, '0')}
+                </div>
               </div>
-            </div>
-          </article>
-        );
-      })}
-    </div>
+
+              <!-- Content -->
+              <div class="p-4 md:p-5 flex flex-col flex-1">
+                <p class="font-bold text-xs text-dark/45 mb-1.5">{ep.date}</p>
+                <h3 class="font-black text-base leading-snug mb-2 line-clamp-2">{ep.title}</h3>
+                <p class="font-semibold text-sm text-dark/58 leading-relaxed mb-4 flex-1 line-clamp-3">{ep.description}</p>
+                <div class="flex items-center justify-between mt-auto">
+                  <span
+                    class="font-bold text-xs bg-sky-podcast px-2.5 py-1 rounded-full border border-dark/30"
+                  >
+                    {ep.duration}
+                  </span>
+                  <span class="font-extrabold text-sm ep-arrow transition-colors duration-150">Ver episodio →</span>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    )}
   </div>
 </section>
 
 <script>
-  // Store episodes data for the modal
   const cards = document.querySelectorAll('.episode-card');
   cards.forEach(card => {
     card.addEventListener('click', () => {

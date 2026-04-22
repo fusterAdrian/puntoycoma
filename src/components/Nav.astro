@@ -1,0 +1,113 @@
+---
+---
+
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2 group">
+      <img
+        src="/images/mascota.jpg"
+        alt="Logo Punto y Coma"
+        class="w-10 h-10 rounded-full border-2 border-dark object-cover"
+      />
+      <span class="font-black text-xl tracking-tight">PUNTO Y COMA</span>
+      <span class="font-black text-3xl text-orange-podcast leading-none -ml-1">;</span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <div class="hidden md:flex items-center gap-1">
+      {[
+        ['Capítulos', '#capitulos'],
+        ['Presentadores', '#presentadores'],
+        ['Escúchanos', '#escuchanos'],
+        ['Contacto', '#contacto'],
+      ].map(([label, href]) => (
+        <a
+          href={href}
+          class="font-bold text-sm px-4 py-2 rounded-full transition-all duration-150 hover:bg-dark hover:text-offwhite"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button
+      id="menu-toggle"
+      class="md:hidden flex flex-col gap-1.5 p-2 rounded-lg border-2 border-dark"
+      aria-label="Abrir menú"
+    >
+      <span class="w-5 h-0.5 bg-dark block transition-all" id="bar1"></span>
+      <span class="w-5 h-0.5 bg-dark block transition-all" id="bar2"></span>
+      <span class="w-5 h-0.5 bg-dark block transition-all" id="bar3"></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="md:hidden hidden flex-col gap-1 pb-4 px-2 bg-offwhite border-b-2 border-dark"
+  >
+    {[
+      ['Capítulos', '#capitulos'],
+      ['Presentadores', '#presentadores'],
+      ['Escúchanos', '#escuchanos'],
+      ['Contacto', '#contacto'],
+    ].map(([label, href]) => (
+      <a
+        href={href}
+        class="font-bold text-base px-4 py-3 rounded-xl hover:bg-sky-podcast transition-colors block"
+      >
+        {label}
+      </a>
+    ))}
+  </div>
+</nav>
+
+<script>
+  const navbar = document.getElementById('navbar')!;
+  const toggle = document.getElementById('menu-toggle')!;
+  const mobileMenu = document.getElementById('mobile-menu')!;
+  const bar1 = document.getElementById('bar1')!;
+  const bar2 = document.getElementById('bar2')!;
+  const bar3 = document.getElementById('bar3')!;
+
+  let menuOpen = false;
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 30) {
+      navbar.classList.add('bg-offwhite', 'border-b-2', 'border-dark');
+    } else {
+      navbar.classList.remove('bg-offwhite', 'border-b-2', 'border-dark');
+    }
+  });
+
+  toggle.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    if (menuOpen) {
+      mobileMenu.classList.remove('hidden');
+      mobileMenu.classList.add('flex');
+      bar1.style.transform = 'rotate(45deg) translate(5px, 5px)';
+      bar2.style.opacity = '0';
+      bar3.style.transform = 'rotate(-45deg) translate(5px, -5px)';
+    } else {
+      mobileMenu.classList.add('hidden');
+      mobileMenu.classList.remove('flex');
+      bar1.style.transform = '';
+      bar2.style.opacity = '';
+      bar3.style.transform = '';
+    }
+  });
+
+  // Close on link click
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      menuOpen = false;
+      mobileMenu.classList.add('hidden');
+      mobileMenu.classList.remove('flex');
+      bar1.style.transform = '';
+      bar2.style.opacity = '';
+      bar3.style.transform = '';
+    });
+  });
+</script>

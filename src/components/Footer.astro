@@ -1,0 +1,41 @@
+---
+---
+
+<footer
+  class="px-4 md:px-8 py-9 text-white"
+  style="background: #0F0F0F; border-top: 2.5px solid rgba(255,255,255,0.08);"
+>
+  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5 flex-wrap">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2.5">
+      <img
+        src="/images/mascota.jpg"
+        alt="Logo"
+        class="w-9 h-9 rounded-full object-cover"
+        style="border: 2px solid rgba(255,255,255,0.3);"
+      />
+      <span class="font-black text-lg">PUNTO Y COMA</span>
+      <span class="font-black text-2xl text-orange-podcast">;</span>
+    </a>
+
+    <!-- Links -->
+    <div class="flex gap-5">
+      {[
+        ['YouTube', 'https://www.youtube.com/@PuntoyComa-t2i'],
+        ['Instagram', 'https://www.instagram.com/puntoycomapodc/'],
+        ['TikTok', 'https://www.tiktok.com/@puntoycomapodcast'],
+      ].map(([n, h]) => (
+        <a
+          href={h}
+          target="_blank"
+          rel="noopener"
+          class="font-bold text-sm opacity-55 hover:opacity-100 transition-opacity duration-150"
+        >
+          {n}
+        </a>
+      ))}
+    </div>
+
+    <p class="font-semibold text-xs opacity-35">© 2025 Punto y Coma Podcast</p>
+  </div>
+</footer>

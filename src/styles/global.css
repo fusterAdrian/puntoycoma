@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&display=swap');
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #FEFDF9;
+    color: #1A1A1A;
+    overflow-x: hidden;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #A8D4E8;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1A1A1A;
+    border-radius: 5px;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center gap-2 px-6 py-3 border-2 border-dark rounded-full font-nunito font-extrabold text-sm cursor-pointer transition-all duration-100;
+    box-shadow: 4px 4px 0 #1A1A1A;
+  }
+  .btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #1A1A1A;
+  }
+  .btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 #1A1A1A;
+  }
+  .btn-orange {
+    @apply bg-orange-podcast text-dark;
+  }
+  .btn-dark {
+    @apply bg-dark text-offwhite;
+  }
+  .btn-sky {
+    @apply bg-sky-podcast text-dark;
+  }
+  .btn-white {
+    @apply bg-offwhite text-dark;
+  }
+
+  .form-field {
+    @apply w-full px-4 py-3 border-2 border-dark rounded-xl font-nunito text-sm font-semibold bg-offwhite text-dark outline-none transition-all duration-100;
+    box-shadow: 3px 3px 0 #1A1A1A;
+  }
+  .form-field:focus {
+    box-shadow: 5px 5px 0 #1A1A1A;
+  }
+
+  .card-brutal {
+    @apply border-2 border-dark rounded-xl bg-offwhite;
+    box-shadow: 4px 4px 0 #1A1A1A;
+    transition: transform 0.14s, box-shadow 0.14s;
+  }
+  .card-brutal:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #1A1A1A;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-4 py-1 border-2 border-dark rounded-full font-extrabold text-xs tracking-widest uppercase;
+    box-shadow: 2px 2px 0 #1A1A1A;
+  }
+
+  .dot-pattern {
+    background-image: radial-gradient(circle, rgba(0,0,0,0.065) 1.5px, transparent 1.5px);
+    background-size: 26px 26px;
+  }
+}

@@ -1,0 +1,108 @@
+---
+---
+
+<section
+  id="inicio"
+  class="relative min-h-screen flex items-center pt-24 pb-16 px-4 md:px-8 overflow-hidden"
+  style="background: linear-gradient(155deg, #A8D4E8 0%, #C5E5F5 60%, #D8EFF8 100%);"
+>
+  <!-- Dot pattern -->
+  <div class="dot-pattern absolute inset-0 pointer-events-none"></div>
+
+  <!-- Decorative blobs -->
+  <div
+    class="absolute -top-16 -right-16 w-64 md:w-96 h-64 md:h-96 rounded-full border-2 border-dark opacity-15"
+    style="background: #F5A623;"
+  ></div>
+  <div
+    class="absolute bottom-16 -left-10 w-44 h-44 rounded-full opacity-[0.06]"
+    style="background: #1A1A1A;"
+  ></div>
+
+  <div class="max-w-7xl mx-auto w-full relative z-10">
+    <div class="flex flex-col md:flex-row items-center gap-12 md:gap-16">
+      <!-- Left content -->
+      <div class="flex-1 animate-fadeUp text-center md:text-left">
+        <div
+          class="inline-flex items-center gap-2 bg-orange-podcast border-2 border-dark rounded-full px-4 py-1 mb-6 font-black text-xs tracking-widest uppercase -rotate-1"
+          style="box-shadow: 4px 4px 0 #1A1A1A;"
+        >
+          🎙 Podcast · Tech & Programación
+        </div>
+
+        <h1
+          class="font-black leading-[0.95] mb-6 tracking-tight"
+          style="font-size: clamp(52px, 8vw, 96px); letter-spacing: -3px;"
+        >
+          PUNTO<br />
+          <span class="relative inline-block">
+            <span
+              class="text-orange-podcast"
+              style="-webkit-text-stroke: 3px #1A1A1A; paint-order: stroke fill; text-shadow: 5px 5px 0 #1A1A1A;"
+            >Y COMA</span>
+            <span
+              class="text-orange-podcast"
+              style="-webkit-text-stroke: 3px #1A1A1A; paint-order: stroke fill;"
+            >;</span>
+          </span>
+        </h1>
+
+        <p class="font-semibold text-lg leading-relaxed max-w-md mx-auto md:mx-0 mb-10 text-dark/70">
+          Alejandro y Adrián debaten sobre novedades de programación, inteligencia artificial y los productos tech que más nos interesan. Sin filtros.
+        </p>
+
+        <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+          <a href="#capitulos" class="btn btn-dark text-base">▶ Ver episodios</a>
+          <a
+            href="https://www.youtube.com/@PuntoyComa-t2i"
+            target="_blank"
+            rel="noopener"
+            class="btn btn-orange text-base"
+          >
+            Suscríbete en YouTube
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="flex gap-8 mt-12 justify-center md:justify-start">
+          {[
+            ['10', 'Episodios'],
+            ['3', 'Plataformas'],
+            ['2', 'Hosts'],
+          ].map(([n, l]) => (
+            <div>
+              <div class="font-black text-4xl leading-none tracking-tight">{n}</div>
+              <div class="font-bold text-sm opacity-55 mt-1">{l}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right: mascot -->
+      <div class="flex-shrink-0 flex justify-center">
+        <div class="relative w-56 h-56 md:w-80 md:h-80 animate-float">
+          <img
+            src="/images/mascota.jpg"
+            alt="Mascota Punto y Coma"
+            class="w-full h-full object-cover rounded-full border-4 border-dark"
+            style="box-shadow: 8px 8px 0 #1A1A1A;"
+          />
+          <!-- Badge -->
+          <div
+            class="absolute -bottom-3 -right-3 bg-orange-podcast border-2 border-dark rounded-xl px-3 py-2 font-black text-sm rotate-3 whitespace-nowrap"
+            style="box-shadow: 4px 4px 0 #1A1A1A;"
+          >
+            ¡Nuevo episodio! 🔥
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wave bottom -->
+  <div class="absolute bottom-[-2px] left-0 right-0">
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" class="w-full h-16 block">
+      <path d="M0,42 C240,70 480,14 720,42 C960,70 1200,14 1440,42 L1440,64 L0,64 Z" fill="#FEFDF9" />
+    </svg>
+  </div>
+</section>

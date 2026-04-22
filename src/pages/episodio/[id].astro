@@ -1,0 +1,236 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Footer from '../../components/Footer.astro';
+import { EPISODES, SOCIALS } from '../../data/content';
+
+export function getStaticPaths() {
+  return EPISODES.map((ep) => ({
+    params: { id: String(ep.id) },
+    props: { episode: ep },
+  }));
+}
+
+const { episode } = Astro.props;
+
+const iconPaths: Record<string, string> = {
+  YouTube: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.5 6.2s-.3-1.9-1.1-2.7c-1-1.1-2.2-1.1-2.7-1.2C16.8 2 12 2 12 2s-4.8 0-7.7.3c-.5.1-1.7.1-2.7 1.2-.8.8-1.1 2.7-1.1 2.7S.2 8.4.2 10.6v2.1c0 2.2.3 4.4.3 4.4s.3 1.9 1.1 2.7c1 1.1 2.4 1 3 1.1C6.8 21 12 21 12 21s4.8 0 7.7-.3c.5-.1 1.7-.1 2.7-1.2.8-.8 1.1-2.7 1.1-2.7s.3-2.2.3-4.4v-2.1c0-2.2-.3-4.4-.3-4.4zM9.7 15.5V8.4l7.3 3.6-7.3 3.5z"/></svg>`,
+  Instagram: `<svg width="18" height="18" viewBox="0 0 24 24"><defs><linearGradient id="ig2" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#F58529"/><stop offset="50%" stop-color="#DD2A7B"/><stop offset="100%" stop-color="#8134AF"/></linearGradient></defs><path fill="url(#ig2)" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.2.1 4.7 1.7 4.8 4.8.1 1.3.1 1.6.1 4.8 0 3.2 0 3.6-.1 4.8-.1 3.1-1.6 4.7-4.8 4.8-1.3.1-1.6.1-4.8.1-3.2 0-3.6 0-4.8-.1-3.2-.1-4.7-1.7-4.8-4.8C2.3 15.6 2.2 15.2 2.2 12c0-3.2 0-3.6.1-4.8.1-3.2 1.7-4.7 4.8-4.8 1.3-.1 1.6-.1 4.9-.2zm0 1.8c-3.2 0-3.5 0-4.7.1-2.2.1-3.2 1.1-3.3 3.3C4 8.5 4 8.8 4 12s0 3.5.1 4.7c.1 2.2 1.1 3.2 3.3 3.3 1.2.1 1.5.1 4.7.1s3.5 0 4.7-.1c2.2-.1 3.2-1.1 3.3-3.3.1-1.2.1-1.5.1-4.7s0-3.5-.1-4.7c-.1-2.2-1.1-3.2-3.3-3.3-1.3-.1-1.6-.1-4.8-.1zm0 3a5 5 0 100 10 5 5 0 000-10zm0 8.2a3.2 3.2 0 110-6.4 3.2 3.2 0 010 6.4zm5.2-8.4a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0z"/></svg>`,
+  Spotify: `<svg width="18" height="18" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.7 0 12 0zm5.5 17.3c-.2.3-.6.4-.9.2-2.6-1.6-5.8-1.9-9.7-1.1-.4.1-.7-.2-.8-.5-.1-.4.2-.7.5-.8 4.2-.9 7.7-.5 10.6 1.3.4.2.5.6.3.9zm1.5-3.3c-.3.4-.8.5-1.2.2-3-1.8-7.5-2.3-11-1.3-.5.1-.9-.2-1-.6-.1-.5.2-.9.6-1 4-.9 9 0 12.4 1.5.4.3.5.8.2 1.2zm.1-3.4c-3.6-2.1-9.4-2.3-12.8-1.3-.5.1-1.1-.2-1.2-.8-.1-.5.2-1.1.8-1.2 3.9-1.2 10.3-.9 14.4 1.5.5.3.7 1 .4 1.5-.3.5-1 .7-1.6.3z"/></svg>`,
+};
+---
+
+<Layout
+  title={`EP. ${String(episode.id).padStart(2,'0')} — ${episode.title} | Punto y Coma`}
+  description={episode.description}
+>
+  <!-- Sticky nav for detail page -->
+  <nav class="sticky top-0 z-50 bg-offwhite border-b-2 border-dark px-4 md:px-8">
+    <div class="max-w-6xl mx-auto flex items-center gap-4 h-16">
+      <a href="/" class="btn btn-sky text-sm px-4 py-2 flex-shrink-0">← Volver</a>
+      <div class="font-black text-xs opacity-40 flex-shrink-0">
+        EP. {String(episode.id).padStart(2, '0')}
+      </div>
+      <div class="font-extrabold text-sm truncate">{episode.title}</div>
+    </div>
+  </nav>
+
+  <main class="min-h-screen bg-offwhite">
+    <div class="max-w-5xl mx-auto px-4 md:px-8 py-12 md:py-16 pb-20">
+
+      <!-- Header -->
+      <div class="mb-12">
+        <div class="flex gap-2 items-center flex-wrap mb-3">
+          <div
+            class="badge bg-orange-podcast -rotate-1"
+          >
+            EP. {String(episode.id).padStart(2, '0')}
+          </div>
+          <span class="font-bold text-sm opacity-45">{episode.date} · {episode.duration}</span>
+        </div>
+        <h1
+          class="font-black leading-tight mb-4"
+          style="font-size: clamp(28px, 4vw, 46px); letter-spacing: -1.5px;"
+        >
+          {episode.title}
+        </h1>
+        <p class="font-semibold text-base md:text-lg leading-relaxed text-dark/62 max-w-2xl">
+          {episode.description}
+        </p>
+      </div>
+
+      <!-- Two column layout -->
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start">
+
+        <!-- Left: Player + platforms -->
+        <div>
+          <!-- Video / placeholder -->
+          <div class="border-2 border-dark rounded-2xl overflow-hidden mb-7" style="box-shadow: 6px 6px 0 #1A1A1A;">
+            {episode.youtubeId ? (
+              <div class="relative" style="padding-bottom: 56.25%;">
+                <iframe
+                  class="absolute inset-0 w-full h-full"
+                  src={`https://www.youtube-nocookie.com/embed/${episode.youtubeId}`}
+                  allowfullscreen
+                  title={episode.title}
+                />
+              </div>
+            ) : (
+              <div
+                class="aspect-video flex flex-col items-center justify-center gap-4 relative overflow-hidden border-b-2 border-dark"
+                style="background: linear-gradient(135deg, #A8D4E8 0%, #7BB8D4 100%);"
+              >
+                <div
+                  class="absolute inset-0 pointer-events-none"
+                  style="background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1.5px, transparent 1.5px); background-size: 20px 20px;"
+                ></div>
+                <img
+                  src="/images/mascota.jpg"
+                  class="w-20 h-20 rounded-full border-2 border-dark object-cover relative z-10"
+                  style="box-shadow: 4px 4px 0 #1A1A1A;"
+                  alt=""
+                />
+                <div class="text-center relative z-10">
+                  <p class="font-black text-lg mb-1">El vídeo llegará pronto</p>
+                  <p class="font-semibold text-sm opacity-60 mb-4">
+                    Actualiza el youtubeId del episodio para activar el reproductor
+                  </p>
+                  <a
+                    href="https://www.youtube.com/@PuntoyComa-t2i"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-dark text-xs px-5 py-2"
+                  >
+                    Ver canal en YouTube ↗
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <!-- Listen on -->
+          <div
+            class="bg-sky-podcast border-2 border-dark rounded-2xl px-5 py-5"
+            style="box-shadow: 4px 4px 0 #1A1A1A;"
+          >
+            <p class="font-black text-xs uppercase tracking-widest mb-4">Escúchalo también en</p>
+            <div class="flex flex-wrap gap-2.5">
+              {SOCIALS.slice(0, 3).map(s => (
+                <a
+                  href={s.link}
+                  target="_blank"
+                  rel="noopener"
+                  class="flex items-center gap-2 bg-offwhite border-2 border-dark rounded-full px-4 py-2 font-extrabold text-sm transition-transform duration-100 hover:-translate-y-0.5"
+                  style="box-shadow: 2px 2px 0 #1A1A1A;"
+                >
+                  <span set:html={iconPaths[s.name] || ''} />
+                  {s.name}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Topics accordion -->
+        <div>
+          <h2 class="font-black text-xl mb-5" style="letter-spacing: -0.5px;">
+            Temas del episodio
+            <span
+              class="inline-block bg-orange-podcast border-2 border-dark rounded-full px-2.5 py-0.5 text-sm ml-2 align-middle"
+              style="box-shadow: 2px 2px 0 #1A1A1A;"
+            >
+              {episode.topics.length}
+            </span>
+          </h2>
+          <div class="flex flex-col gap-3" id="accordion">
+            {episode.topics.map((topic, i) => (
+              <div
+                class="topic-item border-2 border-dark rounded-2xl overflow-hidden transition-all duration-150"
+                style="box-shadow: 2px 2px 0 #1A1A1A;"
+                data-index={i}
+                data-open={i === 0 ? 'true' : 'false'}
+              >
+                <button
+                  class="topic-btn w-full bg-transparent border-none cursor-pointer px-4 py-4 flex justify-between items-start gap-3 font-nunito text-left"
+                  type="button"
+                >
+                  <div class="flex gap-3 items-start">
+                    <div
+                      class="flex-shrink-0 w-7 h-7 bg-orange-podcast border-2 border-dark rounded-full flex items-center justify-center font-black text-xs mt-0.5"
+                      style="box-shadow: 2px 2px 0 #1A1A1A;"
+                    >
+                      {i + 1}
+                    </div>
+                    <span class="font-extrabold text-sm leading-snug">{topic.title}</span>
+                  </div>
+                  <span class="topic-arrow font-black text-base flex-shrink-0 mt-0.5 transition-transform duration-200">↓</span>
+                </button>
+                <div class="topic-body px-4 pb-5 pl-14 hidden">
+                  <p class="font-semibold text-sm leading-relaxed text-dark/63 mb-3">
+                    {topic.summary}
+                  </p>
+                  {topic.link && topic.link !== '#' && (
+                    <a
+                      href={topic.link}
+                      target="_blank"
+                      rel="noopener"
+                      class="btn btn-dark text-xs px-4 py-2"
+                    >
+                      Ver noticia ↗
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back bar -->
+    <div class="border-t-2 border-dark px-4 md:px-8 py-7 text-center" style="background: #F2EDE3;">
+      <a href="/" class="btn btn-sky text-base">← Volver a todos los episodios</a>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  // Accordion logic
+  const items = document.querySelectorAll('.topic-item');
+
+  function openItem(item: Element) {
+    item.setAttribute('data-open', 'true');
+    (item as HTMLElement).style.background = '#F2EDE3';
+    (item as HTMLElement).style.boxShadow = '4px 4px 0 #1A1A1A';
+    const body = item.querySelector('.topic-body') as HTMLElement;
+    const arrow = item.querySelector('.topic-arrow') as HTMLElement;
+    if (body) body.classList.remove('hidden');
+    if (arrow) arrow.style.transform = 'rotate(180deg)';
+  }
+
+  function closeItem(item: Element) {
+    item.setAttribute('data-open', 'false');
+    (item as HTMLElement).style.background = '';
+    (item as HTMLElement).style.boxShadow = '2px 2px 0 #1A1A1A';
+    const body = item.querySelector('.topic-body') as HTMLElement;
+    const arrow = item.querySelector('.topic-arrow') as HTMLElement;
+    if (body) body.classList.add('hidden');
+    if (arrow) arrow.style.transform = '';
+  }
+
+  // Open first item by default
+  if (items.length > 0) openItem(items[0]);
+
+  items.forEach(item => {
+    const btn = item.querySelector('.topic-btn')!;
+    btn.addEventListener('click', () => {
+      const isOpen = item.getAttribute('data-open') === 'true';
+      if (isOpen) {
+        closeItem(item);
+      } else {
+        openItem(item);
+      }
+    });
+  });
+</script>

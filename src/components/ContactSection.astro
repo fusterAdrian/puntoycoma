@@ -1,0 +1,108 @@
+---
+---
+
+<section
+  id="contacto"
+  class="py-20 md:py-28 px-4 md:px-8 border-t-2 border-dark"
+  style="background: #F2EDE3;"
+>
+  <div class="max-w-2xl mx-auto">
+    <div class="text-center mb-12">
+      <div
+        class="badge bg-sky-podcast mb-3"
+      >
+        Contacto
+      </div>
+      <h2
+        class="font-black mb-3"
+        style="font-size: clamp(34px, 5vw, 56px); letter-spacing: -2px;"
+      >
+        ¿Nos escribes?
+      </h2>
+      <p class="font-semibold text-base text-dark/58 leading-relaxed">
+        Sugerencias, colaboraciones o simplemente decirnos hola. ¡Estamos para lo que necesites!
+      </p>
+    </div>
+
+    <!-- Success state (hidden by default) -->
+    <div
+      id="form-success"
+      class="hidden bg-orange-podcast border-2 border-dark rounded-2xl p-11 text-center animate-pop"
+      style="box-shadow: 6px 6px 0 #1A1A1A;"
+    >
+      <div class="text-5xl mb-3">✌️</div>
+      <h3 class="font-black text-2xl mb-2">¡Mensaje enviado!</h3>
+      <p class="font-semibold text-base">Se abrirá tu cliente de correo para completar el envío. ¡Gracias!</p>
+    </div>
+
+    <!-- Form -->
+    <div
+      id="contact-form-wrapper"
+      class="bg-offwhite border-2 border-dark rounded-2xl p-8 md:p-11 flex flex-col gap-5"
+      style="box-shadow: 6px 6px 0 #1A1A1A;"
+    >
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-extrabold text-xs uppercase tracking-wide mb-2">Nombre</label>
+          <input
+            id="field-name"
+            type="text"
+            required
+            placeholder="Tu nombre"
+            class="form-field"
+          />
+        </div>
+        <div>
+          <label class="block font-extrabold text-xs uppercase tracking-wide mb-2">Email</label>
+          <input
+            id="field-email"
+            type="email"
+            required
+            placeholder="tu@email.com"
+            class="form-field"
+          />
+        </div>
+      </div>
+      <div>
+        <label class="block font-extrabold text-xs uppercase tracking-wide mb-2">Mensaje</label>
+        <textarea
+          id="field-message"
+          required
+          placeholder="¿En qué podemos ayudarte?"
+          class="form-field resize-y min-h-32"
+        ></textarea>
+      </div>
+      <button
+        id="form-submit"
+        type="button"
+        class="btn btn-orange text-base self-start px-8 py-3.5"
+      >
+        Enviar mensaje ✉️
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const submitBtn = document.getElementById('form-submit')!;
+  const formWrapper = document.getElementById('contact-form-wrapper')!;
+  const successBox = document.getElementById('form-success')!;
+
+  submitBtn.addEventListener('click', () => {
+    const name = (document.getElementById('field-name') as HTMLInputElement).value.trim();
+    const email = (document.getElementById('field-email') as HTMLInputElement).value.trim();
+    const message = (document.getElementById('field-message') as HTMLTextAreaElement).value.trim();
+
+    if (!name || !email || !message) {
+      alert('Por favor rellena todos los campos.');
+      return;
+    }
+
+    const sub = encodeURIComponent(`Mensaje de ${name} — Punto y Coma Podcast`);
+    const bod = encodeURIComponent(`Nombre: ${name}\nEmail: ${email}\n\n${message}`);
+    window.location.href = `mailto:puntoycomacontactopod@gmail.com?subject=${sub}&body=${bod}`;
+
+    formWrapper.classList.add('hidden');
+    successBox.classList.remove('hidden');
+  });
+</script>

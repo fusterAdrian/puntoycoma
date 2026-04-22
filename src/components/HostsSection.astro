@@ -1,0 +1,61 @@
+---
+import { HOSTS } from '../data/content';
+---
+
+<section
+  id="presentadores"
+  class="py-20 md:py-28 px-4 md:px-8 border-t-2 border-b-2 border-dark relative overflow-hidden"
+  style="background: #A8D4E8;"
+>
+  <!-- Dot pattern -->
+  <div
+    class="absolute inset-0 pointer-events-none"
+    style="background-image: radial-gradient(circle, rgba(0,0,0,0.055) 1.5px, transparent 1.5px); background-size: 22px 22px;"
+  ></div>
+
+  <div class="max-w-4xl mx-auto relative z-10">
+    <div class="text-center mb-14">
+      <div
+        class="badge bg-dark text-offwhite mb-3"
+      >
+        Los presentadores
+      </div>
+      <h2
+        class="font-black"
+        style="font-size: clamp(34px, 5vw, 56px); letter-spacing: -2px;"
+      >
+        Quiénes somos
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+      {HOSTS.map((host) => (
+        <div
+          class="bg-offwhite border-2 border-dark rounded-2xl p-8 md:p-10 text-center flex flex-col items-center gap-5"
+          style="box-shadow: 6px 6px 0 #1A1A1A;"
+        >
+          <div
+            class="w-36 h-36 rounded-full overflow-hidden border-2 border-dark bg-white"
+            style="box-shadow: 4px 4px 0 #1A1A1A;"
+          >
+            <img
+              src={host.img}
+              alt={host.name}
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <div class="font-black text-3xl tracking-tight mb-1">{host.name}</div>
+            <div
+              class="inline-block font-black text-xs tracking-widest uppercase px-3 py-1 rounded-full border border-dark/30 bg-orange-podcast mb-3"
+              style="box-shadow: 2px 2px 0 #1A1A1A;"
+            >
+              {host.role}
+            </div>
+            <p class="font-semibold text-base leading-relaxed text-dark/62">{host.bio}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

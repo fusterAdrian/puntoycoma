@@ -1,4 +1,6 @@
 ---
+// Obtén tu clave gratuita en https://web3forms.com (introduce puntoycomacontactopod@gmail.com)
+const WEB3FORMS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 ---
 
 <section
@@ -46,18 +48,11 @@
     <!-- Form -->
     <form
       id="contact-form"
-      name="contacto"
-      method="POST"
-      data-netlify="true"
-      netlify-honeypot="bot-field"
       class="bg-offwhite border-2 border-dark rounded-2xl p-8 md:p-11 flex flex-col gap-5"
       style="box-shadow: 6px 6px 0 #1A1A1A;"
       novalidate
     >
-      <input type="hidden" name="form-name" value="contacto" />
-      <p class="hidden">
-        <label>No rellenar: <input name="bot-field" /></label>
-      </p>
+      <input type="hidden" id="w3f-key" value={WEB3FORMS_KEY} />
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
@@ -150,7 +145,6 @@
     return !nameInvalid && !emailInvalid && !messageInvalid;
   }
 
-  // Clear error on input
   [fieldName, fieldEmail, fieldMessage].forEach((field) => {
     field.addEventListener('input', () => {
       const errorEl =
@@ -168,23 +162,30 @@
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Enviando…';
+    errorBox.classList.add('hidden');
 
     try {
-      const data = new FormData(form);
-      const body = new URLSearchParams(data as unknown as Record<string, string>).toString();
+      const accessKey = (document.getElementById('w3f-key') as HTMLInputElement).value;
 
-      const res = await fetch('/', {
+      const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `Mensaje de ${fieldName.value.trim()} — Punto y Coma Podcast`,
+          name: fieldName.value.trim(),
+          email: fieldEmail.value.trim(),
+          message: fieldMessage.value.trim(),
+        }),
       });
 
-      if (res.ok) {
+      const data = await res.json();
+
+      if (data.success) {
         form.classList.add('hidden');
-        errorBox.classList.add('hidden');
         successBox.classList.remove('hidden');
       } else {
-        throw new Error('Response not ok');
+        throw new Error(data.message ?? 'Error desconocido');
       }
     } catch {
       errorBox.classList.remove('hidden');

@@ -32,77 +32,164 @@
     >
       <div class="text-5xl mb-3">✌️</div>
       <h3 class="font-black text-2xl mb-2">¡Mensaje enviado!</h3>
-      <p class="font-semibold text-base">Se abrirá tu cliente de correo para completar el envío. ¡Gracias!</p>
+      <p class="font-semibold text-base">Lo hemos recibido y te responderemos pronto. ¡Gracias!</p>
+    </div>
+
+    <!-- Error state (hidden by default) -->
+    <div
+      id="form-error"
+      class="hidden bg-red-100 border-2 border-red-500 rounded-2xl p-6 text-center mb-4"
+    >
+      <p class="font-semibold text-base text-red-700">Algo fue mal al enviar el mensaje. Por favor, inténtalo de nuevo.</p>
     </div>
 
     <!-- Form -->
-    <div
-      id="contact-form-wrapper"
+    <form
+      id="contact-form"
+      name="contacto"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
       class="bg-offwhite border-2 border-dark rounded-2xl p-8 md:p-11 flex flex-col gap-5"
       style="box-shadow: 6px 6px 0 #1A1A1A;"
+      novalidate
     >
+      <input type="hidden" name="form-name" value="contacto" />
+      <p class="hidden">
+        <label>No rellenar: <input name="bot-field" /></label>
+      </p>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block font-extrabold text-xs uppercase tracking-wide mb-2">Nombre</label>
+          <label for="field-name" class="block font-extrabold text-xs uppercase tracking-wide mb-2">Nombre</label>
           <input
             id="field-name"
+            name="name"
             type="text"
-            required
             placeholder="Tu nombre"
             class="form-field"
+            autocomplete="name"
           />
+          <p id="error-name" class="hidden text-red-600 text-xs font-semibold mt-1">El nombre es obligatorio.</p>
         </div>
         <div>
-          <label class="block font-extrabold text-xs uppercase tracking-wide mb-2">Email</label>
+          <label for="field-email" class="block font-extrabold text-xs uppercase tracking-wide mb-2">Email</label>
           <input
             id="field-email"
+            name="email"
             type="email"
-            required
             placeholder="tu@email.com"
             class="form-field"
+            autocomplete="email"
           />
+          <p id="error-email" class="hidden text-red-600 text-xs font-semibold mt-1">Introduce un email válido.</p>
         </div>
       </div>
       <div>
-        <label class="block font-extrabold text-xs uppercase tracking-wide mb-2">Mensaje</label>
+        <label for="field-message" class="block font-extrabold text-xs uppercase tracking-wide mb-2">Mensaje</label>
         <textarea
           id="field-message"
-          required
+          name="message"
           placeholder="¿En qué podemos ayudarte?"
           class="form-field resize-y min-h-32"
         ></textarea>
+        <p id="error-message" class="hidden text-red-600 text-xs font-semibold mt-1">El mensaje es obligatorio.</p>
       </div>
       <button
         id="form-submit"
-        type="button"
+        type="submit"
         class="btn btn-orange text-base self-start px-8 py-3.5"
       >
         Enviar mensaje ✉️
       </button>
-    </div>
+    </form>
   </div>
 </section>
 
 <script>
-  const submitBtn = document.getElementById('form-submit')!;
-  const formWrapper = document.getElementById('contact-form-wrapper')!;
+  const form = document.getElementById('contact-form') as HTMLFormElement;
   const successBox = document.getElementById('form-success')!;
+  const errorBox = document.getElementById('form-error')!;
+  const submitBtn = document.getElementById('form-submit') as HTMLButtonElement;
 
-  submitBtn.addEventListener('click', () => {
-    const name = (document.getElementById('field-name') as HTMLInputElement).value.trim();
-    const email = (document.getElementById('field-email') as HTMLInputElement).value.trim();
-    const message = (document.getElementById('field-message') as HTMLTextAreaElement).value.trim();
+  const fieldName = document.getElementById('field-name') as HTMLInputElement;
+  const fieldEmail = document.getElementById('field-email') as HTMLInputElement;
+  const fieldMessage = document.getElementById('field-message') as HTMLTextAreaElement;
 
-    if (!name || !email || !message) {
-      alert('Por favor rellena todos los campos.');
-      return;
+  const errorName = document.getElementById('error-name')!;
+  const errorEmail = document.getElementById('error-email')!;
+  const errorMessage = document.getElementById('error-message')!;
+
+  function isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function setFieldError(input: HTMLElement, errorEl: HTMLElement, show: boolean) {
+    if (show) {
+      input.classList.add('field-error');
+      errorEl.classList.remove('hidden');
+    } else {
+      input.classList.remove('field-error');
+      errorEl.classList.add('hidden');
     }
+  }
 
-    const sub = encodeURIComponent(`Mensaje de ${name} — Punto y Coma Podcast`);
-    const bod = encodeURIComponent(`Nombre: ${name}\nEmail: ${email}\n\n${message}`);
-    window.location.href = `mailto:puntoycomacontactopod@gmail.com?subject=${sub}&body=${bod}`;
+  function validate(): boolean {
+    const name = fieldName.value.trim();
+    const email = fieldEmail.value.trim();
+    const message = fieldMessage.value.trim();
 
-    formWrapper.classList.add('hidden');
-    successBox.classList.remove('hidden');
+    const nameInvalid = !name;
+    const emailInvalid = !email || !isValidEmail(email);
+    const messageInvalid = !message;
+
+    setFieldError(fieldName, errorName, nameInvalid);
+    setFieldError(fieldEmail, errorEmail, emailInvalid);
+    setFieldError(fieldMessage, errorMessage, messageInvalid);
+
+    return !nameInvalid && !emailInvalid && !messageInvalid;
+  }
+
+  // Clear error on input
+  [fieldName, fieldEmail, fieldMessage].forEach((field) => {
+    field.addEventListener('input', () => {
+      const errorEl =
+        field === fieldName ? errorName :
+        field === fieldEmail ? errorEmail :
+        errorMessage;
+      setFieldError(field, errorEl, false);
+    });
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Enviando…';
+
+    try {
+      const data = new FormData(form);
+      const body = new URLSearchParams(data as unknown as Record<string, string>).toString();
+
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      });
+
+      if (res.ok) {
+        form.classList.add('hidden');
+        errorBox.classList.add('hidden');
+        successBox.classList.remove('hidden');
+      } else {
+        throw new Error('Response not ok');
+      }
+    } catch {
+      errorBox.classList.remove('hidden');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Enviar mensaje ✉️';
+    }
   });
 </script>

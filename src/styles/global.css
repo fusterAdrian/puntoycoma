@@ -70,6 +70,13 @@
   .form-field:focus {
     box-shadow: 5px 5px 0 #1A1A1A;
   }
+  .form-field.field-error {
+    border-color: #ef4444;
+    box-shadow: 3px 3px 0 #ef4444;
+  }
+  .form-field.field-error:focus {
+    box-shadow: 5px 5px 0 #ef4444;
+  }
 
   .card-brutal {
     @apply border-2 border-dark rounded-xl bg-offwhite;

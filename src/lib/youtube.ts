@@ -12,6 +12,12 @@ function parseDuration(iso: string): string {
   return `${m}min`;
 }
 
+function durationMinutes(iso: string): number {
+  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+  if (!match) return 0;
+  return parseInt(match[1] || '0') * 60 + parseInt(match[2] || '0');
+}
+
 function formatDate(isoDate: string): string {
   const date = new Date(isoDate);
   const str = date.toLocaleDateString('es-ES', {
@@ -65,12 +71,20 @@ export async function fetchYouTubeEpisodes(): Promise<Episode[]> {
   const durData = await durRes.json();
 
   const durationMap: Record<string, string> = {};
+  const rawDurationMap: Record<string, string> = {};
   for (const v of durData.items ?? []) {
     durationMap[v.id] = parseDuration(v.contentDetails.duration);
+    rawDurationMap[v.id] = v.contentDetails.duration;
   }
 
+  // Descartar Shorts y vídeos menores de 20 minutos
+  const episodes = items.filter((item) => {
+    const videoId = item.snippet.resourceId.videoId;
+    return durationMinutes(rawDurationMap[videoId] ?? '') >= 20;
+  });
+
   // 4. Construir episodios (más reciente = EP. 01)
-  return items.map((item, index) => {
+  return episodes.map((item, index) => {
     const s = item.snippet;
     const videoId: string = s.resourceId.videoId;
     const thumbnail: string =

@@ -83,7 +83,7 @@ export async function fetchYouTubeEpisodes(): Promise<Episode[]> {
     return durationMinutes(rawDurationMap[videoId] ?? '') >= 20;
   });
 
-  // 4. Construir episodios (más reciente = EP. 01)
+  // 4. Construir episodios (más antiguo = EP. 01, más reciente = EP. N)
   return episodes.map((item, index) => {
     const s = item.snippet;
     const videoId: string = s.resourceId.videoId;
@@ -95,7 +95,7 @@ export async function fetchYouTubeEpisodes(): Promise<Episode[]> {
       '';
 
     return {
-      id: index + 1,
+      id: episodes.length - index,
       youtubeId: videoId,
       title: s.title,
       date: formatDate(s.publishedAt),
@@ -103,6 +103,7 @@ export async function fetchYouTubeEpisodes(): Promise<Episode[]> {
       description: firstParagraph(s.description),
       thumbnail,
       topics: [],
+      type: s.title.includes('Punto y Coma #E') ? 'interview' : 'episode',
     };
   });
 }

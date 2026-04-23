@@ -12,10 +12,23 @@ const { episodes } = Astro.props;
 <section id="capitulos" class="py-20 md:py-28 px-4 md:px-8 bg-offwhite">
   <div class="max-w-7xl mx-auto">
     <div class="mb-12 md:mb-16">
-      <div
-        class="badge bg-orange-podcast mb-3 -rotate-1"
-      >
-        Capítulos
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <div class="badge bg-orange-podcast -rotate-1">Capítulos</div>
+        <button
+          class="filter-btn font-black text-xs px-3 py-1.5 rounded-lg border-2 border-dark transition-all duration-150"
+          data-filter="all"
+          style="box-shadow: 2px 2px 0 #1A1A1A; background: #1A1A1A; color: #F5F0E8;"
+        >Todos</button>
+        <button
+          class="filter-btn font-black text-xs px-3 py-1.5 rounded-lg border-2 border-dark transition-all duration-150"
+          data-filter="episode"
+          style="box-shadow: 2px 2px 0 #1A1A1A; background: #F5F0E8; color: #1A1A1A;"
+        >Episodios</button>
+        <button
+          class="filter-btn font-black text-xs px-3 py-1.5 rounded-lg border-2 border-dark transition-all duration-150"
+          data-filter="interview"
+          style="box-shadow: 2px 2px 0 #1A1A1A; background: #F5F0E8; color: #1A1A1A;"
+        >Entrevistas</button>
       </div>
       <h2
         class="font-black leading-tight"
@@ -37,6 +50,7 @@ const { episodes } = Astro.props;
             <article
               class="episode-card card-brutal flex flex-col cursor-pointer overflow-hidden"
               data-episode-id={ep.id}
+              data-type={ep.type ?? 'episode'}
             >
               <!-- Thumbnail -->
               <div class="relative">
@@ -72,12 +86,12 @@ const { episodes } = Astro.props;
                     {ep.duration}
                   </div>
                 </div>
-                <!-- EP badge -->
+                <!-- EP / ENT badge -->
                 <div
-                  class="absolute top-2.5 left-2.5 bg-orange-podcast border-2 border-dark rounded-lg px-2.5 py-0.5 font-black text-xs -rotate-2"
-                  style="box-shadow: 2px 2px 0 #1A1A1A;"
+                  class="absolute top-2.5 left-2.5 border-2 border-dark rounded-lg px-2.5 py-0.5 font-black text-xs -rotate-2"
+                  style={`box-shadow: 2px 2px 0 #1A1A1A; background: ${ep.type === 'interview' ? '#C4F0C5' : 'var(--color-orange-podcast, #F5A623)'};`}
                 >
-                  EP. {String(ep.id).padStart(2, '0')}
+                  {ep.type === 'interview' ? 'ENT.' : 'EP.'} {String(ep.id).padStart(2, '0')}
                 </div>
               </div>
 
@@ -104,11 +118,12 @@ const { episodes } = Astro.props;
 </section>
 
 <script>
-  const cards = document.querySelectorAll('.episode-card');
+  const cards = document.querySelectorAll<HTMLElement>('.episode-card');
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+
   cards.forEach(card => {
     card.addEventListener('click', () => {
-      const id = (card as HTMLElement).dataset.episodeId;
-      window.location.href = `/episodio/${id}`;
+      window.location.href = `/episodio/${card.dataset.episodeId}`;
     });
     card.addEventListener('mouseenter', () => {
       const arrow = card.querySelector('.ep-arrow') as HTMLElement;
@@ -118,5 +133,23 @@ const { episodes } = Astro.props;
       const arrow = card.querySelector('.ep-arrow') as HTMLElement;
       if (arrow) arrow.style.color = '';
     });
+  });
+
+  function applyFilter(filter: string) {
+    cards.forEach(card => {
+      const type = card.dataset.type ?? 'episode';
+      const visible = filter === 'all' || type === filter;
+      card.style.display = visible ? '' : 'none';
+    });
+
+    filterBtns.forEach(btn => {
+      const active = btn.dataset.filter === filter;
+      btn.style.background = active ? '#1A1A1A' : '#F5F0E8';
+      btn.style.color = active ? '#F5F0E8' : '#1A1A1A';
+    });
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => applyFilter(btn.dataset.filter ?? 'all'));
   });
 </script>

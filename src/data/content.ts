@@ -13,6 +13,7 @@ export interface Episode {
   description: string;
   thumbnail?: string;
   topics: Topic[];
+  type?: 'episode' | 'interview';
 }
 
 export interface Host {
@@ -176,7 +177,7 @@ export const SOCIALS: Social[] = [
   { name: "YouTube", color: "#FF0000", bg: "#FFF2F2", link: "https://www.youtube.com/@PuntoyComa-t2i", desc: "Vídeos completos" },
   { name: "Instagram", color: "#C13584", bg: "#FFF0F8", link: "https://www.instagram.com/puntoycomapodc/", desc: "Clips y novedades" },
   { name: "TikTok", color: "#010101", bg: "#F5F5F5", link: "https://www.tiktok.com/@puntoycomapodcast", desc: "Momentos destacados" },
-  { name: "Spotify", color: "#1DB954", bg: "#F0FFF5", link: "https://open.spotify.com/show/4IajFCT7UfJXYdyloHQIKm?si=ba12ed6a231d4243", desc: "Solo audio" },
+  { name: "Spotify", color: "#1DB954", bg: "#F0FFF5", link: "https://open.spotify.com/show/4IajFCT7UfJXYdyloHQIKm?si=ba12ed6a231d4243", desc: "Audio y Vídeo" },
   { name: "Apple Podcasts", color: "#B150E2", bg: "#F8F0FF", link: "https://podcasts.apple.com/us/podcast/punto-y-coma-el-podcast-de-noticias-de-programaci%C3%B3n/id1783337508", desc: "Solo audio" },
 ];
 
